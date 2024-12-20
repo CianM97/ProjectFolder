@@ -1,0 +1,23 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2' # or your current Ruby version
+      - name: Install dependencies
+        run: |
+          cd movie_app
+          bundle install
+          rails db:create RAILS_ENV=test
+          rails db:migrate RAILS_ENV=test
+      - name: Run tests
+        run: |
+          cd movie_app
+          bundle exec rspec
