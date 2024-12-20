@@ -1,0 +1,20 @@
+
+<h1 class="mb-3">Movie List</h1>
+
+<%= search_form_for @q, url: movies_path, method: :get, class: "mb-3" do |f| %>
+  <div class="mb-2">
+    <%= f.label :title_cont, "Search by Title:", class: "form-label" %><br>
+    <%= f.search_field :title_cont, class: "form-control" %>
+  </div>
+  <%= f.submit "Search", class: "btn btn-primary" %>
+<% end %>
+
+<% if @movies.any? %>
+  <ul class="list-group">
+    <% @movies.each do |movie| %>
+      <%= render partial: "movie", locals: { movie: movie } %>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No movies found.</p>
+<% end %>
