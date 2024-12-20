@@ -1,4 +1,5 @@
 require 'rails_helper'
+# RSpec testing that will run through cmd with a command
 
 RSpec.describe Movie, type: :model do
   it 'is valid with valid attributes' do

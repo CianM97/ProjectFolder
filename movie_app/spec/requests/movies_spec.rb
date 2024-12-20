@@ -14,8 +14,8 @@ RSpec.describe "Movies API", type: :request do
 
   describe "POST /movies" do
     it "creates a new movie" do
-      valid_attributes = { title: "Inception", release_year: 2010, director: "Christopher Nolan" }
-      post "/movies", params: { movie: valid_attributes }, headers: { "Content-Type" => "application/json" }
+      valid_attributes = { movie: { title: "Inception", release_year: 2010, director: "Christopher Nolan" } }
+      post "/movies", params: valid_attributes.to_json, headers: { "Content-Type" => "application/json" }
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)["title"]).to eq("Inception")
     end
