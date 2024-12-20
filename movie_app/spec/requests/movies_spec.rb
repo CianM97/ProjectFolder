@@ -1,19 +1,38 @@
 require 'rails_helper'
 
-RSpec.describe "Movies", type: :request do
+RSpec.describe "Movies API", type: :request do
+  let!(:movies) { create_list(:movie, 3) }
+  let(:movie_id) { movies.first.id }
+
   describe "GET /movies" do
-    it "returns http success" do
-      get movies_path
+    it "returns all movies" do
+      get "/movies"
       expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body).size).to eq(3)
     end
   end
 
   describe "POST /movies" do
-    it "creates a movie with valid parameters" do
-      post movies_path, params: { movie: { title: "Avatar", director: "Cameron", release_year: 2009 } }
-      expect(response).to have_http_status(:redirect) # since we're redirecting after create
-      follow_redirect!
-      expect(response.body).to include("Avatar")
+    it "creates a new movie" do
+      valid_attributes = { title: "Inception", release_year: 2010, director: "Christopher Nolan" }
+      post "/movies", params: { movie: valid_attributes }, headers: { "Content-Type" => "application/json" }
+      expect(response).to have_http_status(:created)
+      expect(JSON.parse(response.body)["title"]).to eq("Inception")
+    end
+  end
+
+
+  describe "GET /movies/:id" do
+    it "returns a specific movie" do
+      get "/movies/#{movie_id}"
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "DELETE /movies/:id" do
+    it "deletes a movie" do
+      delete "/movies/#{movie_id}"
+      expect(response).to have_http_status(:no_content)
     end
   end
 end

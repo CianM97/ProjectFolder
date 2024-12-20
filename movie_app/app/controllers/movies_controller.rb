@@ -1,22 +1,17 @@
 class MoviesController < ApplicationController
   before_action :set_movie, only: [ :show, :update, :destroy ]
 
-  # GET /movies
   def index
     @q = Movie.ransack(params[:q])
     @movies = @q.result
-    respond_to do |format|
-      format.html  # renders index.html.erb
-      format.json { render json: @movies } # returns JSON if requested
-    end
+    render json: @movies, status: :ok
   end
 
-  # GET /movies/:id
   def show
     render json: @movie
   end
 
-  # POST /movies
+
   def create
     @movie = Movie.new(movie_params)
     if @movie.save
@@ -26,7 +21,6 @@ class MoviesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /movies/:id
   def update
     @movie = Movie.find(params[:id])
     if @movie.update(movie_params)
@@ -36,7 +30,6 @@ class MoviesController < ApplicationController
     end
   end
 
-  # DELETE /movies/:id
   def destroy
     @movie.destroy
     head :no_content

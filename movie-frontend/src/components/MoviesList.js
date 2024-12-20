@@ -1,48 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import SearchBar from "./SearchBar";
+import AddMovieForm from "./AddMovieForm";
 
 const MoviesList = () => {
   const [movies, setMovies] = useState([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        // Fetch data from Rails backend
-        // const response = await axios.get('http://localhost:4000/movies');
-        // Rails currently renders the search form in HTML, but also supports JSON.
-        // Because we've set `config.api_only = false` and inherited from `ActionController::Base`,
-        // to get JSON from the backend, ensure your index action or request includes a format: JSON or update the code to return JSON.
-        // For now, let's assume we can get JSON by adding `.json` to the URL:
-         const response = await axios.get('http://localhost:4000/movies.json');
-        //
-        // If you haven't enabled JSON responses explicitly, we’ll adjust the backend:
-        // In your MoviesController#index, after setting @movies, add:
-        // render json: @movies to ensure JSON is returned when requested.
-        
+        const response = await axios.get(
+          `http://localhost:4000/movies?q[title_cont]=${query}`
+        );
         setMovies(response.data);
       } catch (error) {
         console.error("Error fetching movies:", error);
       }
     };
+
     fetchMovies();
-  }, []);
+  }, [query]);
+
+  const handleSearch = (searchQuery) => {
+    setQuery(searchQuery);
+  };
+
+  const handleMovieAdded = (newMovie) => {
+    setMovies((prevMovies) => [...prevMovies, newMovie]);
+  };
 
   return (
-    <div>
-      <h1>Movies from the Rails API</h1>
-      {movies.length > 0 ? (
-        <ul>
-          {movies.map(movie => (
-            <li key={movie.id}>
-              {movie.title} - {movie.release_year} - {movie.director}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No movies available.</p>
-      )}
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Movie List</h1>
+      <SearchBar onSearch={handleSearch} />
+      <AddMovieForm onMovieAdded={handleMovieAdded} />
+      <ul className="list-group mt-4">
+  {Array.isArray(movies) ? (
+    movies.map((movie) => (
+      <li key={movie.id} className="list-group-item">
+        <strong>{movie.title}</strong> - {movie.release_year} - Directed by {movie.director}
+      </li>
+    ))
+  ) : (
+    <li className="list-group-item">No movies available.</li>
+  )}
+</ul>
+
     </div>
   );
 };
 
 export default MoviesList;
+
+

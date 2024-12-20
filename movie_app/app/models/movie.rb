@@ -1,5 +1,6 @@
 class Movie < ApplicationRecord
   validates :title, presence: true
+  validates :release_year, presence: true
   validates :director, presence: true
 
   def self.ransackable_attributes(auth_object = nil)
