@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SearchBar from "./SearchBar";
 import AddMovieForm from "./AddMovieForm";
+//imports to pull from my other .js files created.
 
+//crates an array so that when the application starts it knows it needs to have an array
+//this isnt here react wont open
 const MoviesList = () => {
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState("");
 
+  //this is to fill the arrays that have been created above
+  //data is pulled from the backend as shown with the url.
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -22,6 +27,7 @@ const MoviesList = () => {
     fetchMovies();
   }, [query]);
 
+  //method used in the SearchBar.js file
   const handleSearch = (searchQuery) => {
     setQuery(searchQuery);
   };
